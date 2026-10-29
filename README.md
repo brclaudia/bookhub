@@ -28,3 +28,7 @@ O projeto tem como objetivo praticar conceitos fundamentais de desenvolvimento d
 ## 🎯 MVP (Produto Mínimo Viável)
 
 Desenvolver uma aplicação funcional que permita cadastrar, listar, consultar, editar e excluir livros de um acervo, com informações básicas para identificação e organização das obras.
+
+## Modelagem do banco
+
+A estrutura inicial das entidades e dos relacionamentos está em [`docs/dominio/modelagem-banco.md`](./docs/dominio/modelagem-banco.md). Várias bibliotecas usam o mesmo banco, separadas pela coluna `empresa_id`. Cada pessoa entra com um dos perfis `admin`, `cliente` ou `usuario`.
