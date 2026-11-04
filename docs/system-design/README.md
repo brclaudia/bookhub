@@ -25,7 +25,7 @@ A estrutura dos componentes está em [arquitetura](../arquitetura/README.md). O 
 
 ## Persistência
 
-A identificação das obras, a coluna `empresa_id` e os perfis `admin`, `cliente` e `usuario` estão na [pseudo-modelagem do banco](../dominio/modelagem-banco.md). O meio físico de armazenamento ainda será escolhido.
+A identificação das obras, a coluna `empresa_id` e os perfis `admin` e `usuario` estão na [pseudo-modelagem do banco](../dominio/modelagem-banco.md). O meio físico de armazenamento ainda será escolhido.
 
 ## Diagrama
 

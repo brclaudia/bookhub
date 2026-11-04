@@ -2,7 +2,7 @@
 
 Formatos combinados entre as partes do BookHub: campos de um livro, respostas de erro e, quando existir, a superfície HTTP ou de eventos.
 
-O significado de cada conceito fica em [domínio](../dominio/README.md). Aqui fica a forma exata dos dados.
+O significado de cada conceito fica em [domínio](../dominio/README.md). Aqui fica a forma exata dos dados. As rotas HTTP estão em [rotas da API](./rotas-api.md).
 
 ## Livro
 
@@ -28,4 +28,4 @@ Campos previstos para identificação e organização da obra. Tipos e obrigator
 
 ## Erros
 
-_A definir: formato da mensagem, códigos e o que a interface mostra ao usuário._
+Os status de cada rota estão em [rotas da API](./rotas-api.md): 400 para dado inválido, 401 para quem não entrou, 403 para perfil sem permissão, 404 para recurso fora da empresa da sessão e 409 para conflito.
