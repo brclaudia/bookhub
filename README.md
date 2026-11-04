@@ -31,4 +31,6 @@ Desenvolver uma aplicação funcional que permita cadastrar, listar, consultar, 
 
 ## Modelagem do banco
 
-A estrutura inicial das entidades e dos relacionamentos está em [`docs/dominio/modelagem-banco.md`](./docs/dominio/modelagem-banco.md). Várias bibliotecas usam o mesmo banco, separadas pela coluna `empresa_id`. Cada pessoa entra com um dos perfis `admin`, `cliente` ou `usuario`.
+A estrutura inicial das entidades e dos relacionamentos está em [`docs/dominio/modelagem-banco.md`](./docs/dominio/modelagem-banco.md). Várias bibliotecas usam o mesmo banco, separadas pela coluna `empresa_id`. Cada pessoa entra com um dos perfis `admin` ou `usuario`. A empresa, pelo `admin`, mantém o acervo e administra a biblioteca. O `usuario` só faz leitura, avaliação e busca.
+
+As rotas previstas do backend estão em [`docs/contratos/rotas-api.md`](./docs/contratos/rotas-api.md).

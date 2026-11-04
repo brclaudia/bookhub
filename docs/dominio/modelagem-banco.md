@@ -6,9 +6,8 @@ Estrutura lógica do banco do acervo de livros. O BookHub atende várias bibliot
 
 Organizar o acervo de cada biblioteca para as operações do MVP:
 
-- cadastrar, consultar, editar e excluir livros da própria empresa;
-- pesquisar por título dentro da empresa;
-- filtrar e agrupar obras por gênero dentro da empresa;
+- a empresa cadastra, consulta, edita e exclui os livros da própria biblioteca;
+- o usuário lê o acervo, busca por título e registra avaliação;
 - autenticar pessoas e limitar o que cada uma faz pelo perfil.
 
 Cada livro guarda título, autor, gênero, ano de publicação e descrição, e pertence a uma única empresa.
@@ -41,19 +40,22 @@ A Livraria Aurora vê as linhas 1 e 2. A Biblioteca do Porto vê as linhas 3 e 4
 
 ## 3. Perfis de acesso
 
-Há três perfis fixos: `admin`, `cliente` e `usuario`. A pessoa sempre atua dentro da empresa à qual está vinculada. Nenhum perfil lista dados de outra biblioteca.
+Há dois perfis fixos: `admin` e `usuario`. A pessoa sempre atua dentro da empresa à qual está vinculada. Nenhum perfil lista dados de outra biblioteca.
+
+A empresa mantém o acervo e administra a biblioteca. Quem executa essas funções é o perfil `admin`. O `usuario` só faz leitura, avaliação e busca.
 
 | codigo | Perfil | O que faz na própria empresa |
 | --- | --- | --- |
-| admin | Admin | Função principal: administrar usuários. Também pode consultar e alterar todo o acervo |
-| cliente | Cliente | Faz tudo no acervo: cadastra, edita, consulta e exclui livros, gêneros e autores. Não administra usuários |
-| usuario | Usuário | Consulta, busca e filtra o acervo |
+| admin | Admin | Age pela empresa: mantém o acervo e administra os usuários, inclusive cria outro admin |
+| usuario | Usuário | Lê o acervo, busca obras e registra avaliação |
 
-| Ação | admin | cliente | usuario |
-| --- | --- | --- | --- |
-| Listar, buscar e filtrar o acervo da própria empresa | sim | sim | sim |
-| Cadastrar, editar e excluir livro, gênero e autor | sim | sim | não |
-| Gerenciar usuários da própria empresa | sim | não | não |
+| Ação | admin | usuario |
+| --- | --- | --- |
+| Ler o acervo da própria empresa | sim | sim |
+| Buscar obras por título | sim | sim |
+| Registrar avaliação de uma obra | não | sim |
+| Cadastrar, editar e excluir livro, gênero e autor | sim | não |
+| Criar, editar, excluir e listar usuários | sim | não |
 
 ## 4. Visão geral
 
@@ -69,6 +71,9 @@ erDiagram
     GENERO ||--o{ LIVRO : classifica
     LIVRO ||--o{ LIVRO_AUTOR : possui
     AUTOR ||--o{ LIVRO_AUTOR : assina
+    EMPRESA ||--o{ AVALIACAO : guarda
+    USUARIO ||--o{ AVALIACAO : registra
+    LIVRO ||--o{ AVALIACAO : recebe
 
     EMPRESA {
         int id PK
@@ -116,6 +121,15 @@ erDiagram
         int autor_id PK_FK
         int ordem
     }
+
+    AVALIACAO {
+        int id PK
+        int nota
+        string comentario
+        int usuario_id FK
+        int livro_id FK
+        int empresa_id FK
+    }
 ```
 
 ## 5. Entidades
@@ -131,21 +145,20 @@ Biblioteca que usa o BookHub. É o limite dos dados.
 
 ### 5.2 Perfil
 
-Catálogo fixo dos três papéis do sistema. Vale para todas as empresas.
+Catálogo fixo dos dois papéis do sistema. Vale para todas as empresas.
 
 | Atributo | Descrição | Tipo | Restrições |
 | --- | --- | --- | --- |
 | id | Identificador do perfil | inteiro | chave primária |
-| codigo | `admin`, `cliente` ou `usuario` | texto | obrigatório, único |
-| nome | Admin, Cliente ou Usuário | texto | obrigatório |
+| codigo | `admin` ou `usuario` | texto | obrigatório, único |
+| nome | Admin ou Usuário | texto | obrigatório |
 
 Carga inicial:
 
 | id | codigo | nome |
 | --- | --- | --- |
 | 1 | admin | Admin |
-| 2 | cliente | Cliente |
-| 3 | usuario | Usuário |
+| 2 | usuario | Usuário |
 
 ### 5.3 Usuário
 
@@ -209,6 +222,21 @@ Ligação entre livro e autor. Existe porque o relacionamento é de muitos para 
 
 A chave primária composta `(livro_id, autor_id)` impede o mesmo autor de ser vinculado duas vezes à mesma obra.
 
+### 5.8 Avaliação
+
+Registro de uma pessoa com perfil `usuario` sobre uma obra da própria empresa.
+
+| Atributo | Descrição | Tipo | Restrições |
+| --- | --- | --- | --- |
+| id | Identificador da avaliação | inteiro | chave primária |
+| nota | Nota da obra | inteiro | obrigatório, de 1 a 5 |
+| comentario | Texto opcional da pessoa | texto | opcional |
+| usuario_id | Pessoa que avaliou | inteiro | obrigatório, chave estrangeira para `usuario.id` |
+| livro_id | Obra avaliada | inteiro | obrigatório, chave estrangeira para `livro.id` |
+| empresa_id | Biblioteca da avaliação | inteiro | obrigatório, chave estrangeira para `empresa.id` |
+
+O par `(usuario_id, livro_id)` é único: cada usuário avalia uma obra uma vez. A obra e o usuário pertencem à mesma empresa.
+
 ## 6. Relacionamentos
 
 | Relacionamento | Cardinalidade | Como ler |
@@ -221,16 +249,18 @@ A chave primária composta `(livro_id, autor_id)` impede o mesmo autor de ser vi
 | Gênero classifica Livro | 1:N | Um gênero agrupa vários livros da mesma biblioteca. Cada livro tem um gênero. |
 | Livro possui Autor | N:N | Um livro tem um ou mais autores. Um autor assina zero ou mais livros da mesma biblioteca. |
 | Livro_autor | associativa | Materializa o N:N e guarda a ordem dos autores. |
+| Usuário registra Avaliação | 1:N | Um usuário registra várias avaliações. Cada avaliação tem um usuário. |
+| Livro recebe Avaliação | 1:N | Uma obra recebe várias avaliações. Cada avaliação aponta para uma obra. |
 
 Regras de integridade:
 
 - toda leitura e toda gravação de livro, gênero, autor e usuário filtram `empresa_id` pela empresa da sessão;
 - o gênero do livro pertence à mesma empresa do livro;
 - cada autor ligado ao livro pertence à mesma empresa do livro;
-- a função principal do `admin` é gerenciar os usuários da própria empresa; ele também pode consultar e alterar todo o acervo;
-- o `cliente` consulta e altera livros, gêneros e autores da própria empresa, e não gerencia usuários;
-- o `usuario` apenas consulta, busca e filtra o acervo da própria empresa;
-- ao excluir um livro, as linhas correspondentes em `livro_autor` também saem;
+- a empresa, pelo perfil `admin`, cadastra, altera e exclui livros, gêneros e autores, e cria os usuários da biblioteca;
+- o `usuario` lê o acervo, busca por título e registra avaliação;
+- a avaliação usa uma obra e um usuário da mesma empresa;
+- ao excluir um livro, os vínculos em `livro_autor` e as avaliações dessa obra também saem;
 - um gênero referenciado por algum livro permanece no banco;
 - todo livro cadastrado aponta para um gênero já existente e para ao menos um autor.
 
@@ -249,13 +279,12 @@ Pessoas no mesmo banco:
 
 | Pessoa | Empresa | Perfil | O que vê ao listar livros |
 | --- | --- | --- | --- |
-| Ana | Livraria Aurora | admin | Administra os usuários da Aurora. Também vê e pode alterar O Cortiço e Capitães da Areia |
-| Carla | Livraria Aurora | cliente | Vê e pode alterar O Cortiço e Capitães da Areia. Não administra usuários |
-| Bruno | Livraria Aurora | usuario | O Cortiço e Capitães da Areia, somente consulta |
-| Diego | Biblioteca do Porto | admin | O Cortiço e Grande Sertão: Veredas |
+| Ana | Livraria Aurora | admin | Pela empresa, mantém o acervo e administra os usuários da Aurora |
+| Bruno | Livraria Aurora | usuario | Lê e busca O Cortiço e Capitães da Areia, e pode avaliar essas obras |
+| Diego | Biblioteca do Porto | admin | Pela empresa, mantém o acervo e administra os usuários do Porto |
 
-A busca por “O Cortiço” feita pela Ana devolve a linha 1. A mesma busca feita pelo Diego devolve a linha 3.
+A busca por “O Cortiço” feita pelo Bruno devolve a linha 1. A mesma busca feita na Biblioteca do Porto devolve a linha 3. O Bruno pode avaliar O Cortiço. Ele não cadastra nem apaga obra.
 
 ## 8. Fora deste desenho
 
-Empréstimo, avaliação, editora e estoque ficam de fora até entrarem no escopo do produto. Banco separado por empresa e schema separado por empresa também ficam de fora: a separação deste modelo é a coluna `empresa_id`.
+Empréstimo, editora e estoque ficam de fora até entrarem no escopo do produto. Banco separado por empresa e schema separado por empresa também ficam de fora: a separação deste modelo é a coluna `empresa_id`.
