@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BookHub</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="topo">
+    <p class="marca">BookHub</p>
+    <h1>Acervo de obras</h1>
+  </header>
+
+  <main class="pagina">
+    <section class="painel" aria-labelledby="titulo-cadastro">
+      <h2 id="titulo-cadastro">Cadastrar obra</h2>
+      <form id="form-obra">
+        <label for="titulo">Título</label>
+        <input id="titulo" name="titulo" type="text" required>
+
+        <label for="autor">Autor</label>
+        <input id="autor" name="autor" type="text" required>
+
+        <label for="categoria">Categoria</label>
+        <input id="categoria" name="categoria" type="text" required>
+
+        <label for="ano">Ano de publicação</label>
+        <input id="ano" name="ano" type="number" min="1" step="1" required>
+
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" name="descricao" rows="4" required></textarea>
+
+        <p id="mensagem-form" class="mensagem" role="status"></p>
+        <button type="submit">Cadastrar</button>
+      </form>
+    </section>
+
+    <section class="painel" aria-labelledby="titulo-lista">
+      <h2 id="titulo-lista">Obras cadastradas</h2>
+      <p id="lista-vazia">Nenhuma obra cadastrada.</p>
+      <ul id="lista-obras" class="lista"></ul>
+    </section>
+  </main>
+
+  <script src="js/obras.js"></script>
+</body>
+</html>

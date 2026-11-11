@@ -1,0 +1,145 @@
+:root {
+  --fundo: #f4f0e6;
+  --papel: #fffdf8;
+  --tinta: #1f2430;
+  --apoio: #5c6570;
+  --linha: #d9d1c3;
+  --destaque: #1f4d3a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--tinta);
+  background: var(--fundo);
+}
+
+.topo,
+.pagina {
+  width: min(960px, calc(100% - 32px));
+  margin-inline: auto;
+}
+
+.topo {
+  padding: 40px 0 8px;
+}
+
+.marca {
+  margin: 0 0 8px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--destaque);
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2.4rem;
+}
+
+.pagina {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  gap: 24px;
+  padding: 24px 0 48px;
+}
+
+.painel {
+  background: var(--papel);
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+h2 {
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+}
+
+label {
+  display: block;
+  margin: 12px 0 6px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--linha);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--tinta);
+}
+
+button {
+  margin-top: 16px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--destaque);
+  color: #fff;
+  font-family: "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.mensagem {
+  min-height: 1.2em;
+  margin: 12px 0 0;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+  color: var(--apoio);
+}
+
+.mensagem.erro {
+  color: #8a2b2b;
+}
+
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.obra {
+  padding: 14px 0;
+  border-top: 1px solid var(--linha);
+}
+
+.obra h3 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+}
+
+.obra p {
+  margin: 0 0 4px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 0.95rem;
+}
+
+.meta {
+  color: var(--apoio);
+}
+
+@media (max-width: 760px) {
+  .pagina {
+    grid-template-columns: 1fr;
+  }
+}
